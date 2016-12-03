@@ -5,6 +5,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Non-default requires
+var http = require('http');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');
+var crypto = require('crypto');
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
