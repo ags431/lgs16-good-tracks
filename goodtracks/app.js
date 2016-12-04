@@ -14,6 +14,8 @@ var crypto = require('crypto');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var search = require('./routes/search');
+var music = require('./routes/music');
 
 var app = express();
 
@@ -29,8 +31,42 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// Non-default middleware
+var sessionOptions = {
+  secret: "lifeishard1289",
+  resave: true,
+  saveUninitialized: true
+};
+app.use(session(sessionOptions));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// TODO: MongoDB initilization & config details
+
+// Passport initialization and config details
+passport.use(new LocalStrategy(
+  function(usernamein, password, done){
+    // TODO: Database query goes here
+    // TODO: and callback
+  }
+)};
+passport.serializeUser(function(user, done) {
+  console.log("serializing user");
+  done(null, user.id); // TODO: This line will change according to the implementation details of the database
+});
+passport.deserializeUser(function(id, done) {
+  console.log("deserializing user');
+  console.log("ID IS " + id);
+  // TODO: Database query to find user using username [id]
+});
+
+// Debug middleware goes here
+
+// ===================================================
+
 app.use('/users', users);
+app.use('/search', search);
+app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
