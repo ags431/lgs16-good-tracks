@@ -5,8 +5,8 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var User = new mongoose.Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    playlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song'}],
-    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Song'}],
+    playlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
     listeningTo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Album'}]
     /*
        Playlist, wishlist, listening to
@@ -18,6 +18,7 @@ var User = new mongoose.Schema({
 * Schema for Song, Album required as well
  */
 
+/*
 var Song = new mongoose.Schema({
     title: {type: String, required: true},
     discogsId: {type: Number, required: true},
@@ -26,22 +27,21 @@ var Song = new mongoose.Schema({
     Album: {type: mongoose.Schema.Types.ObjectId, ref: 'Album'},
     releaseDate: String,
     genre: String
-});
+}); */
 
 var Album = new mongoose.Schema({
     title: {type: String, required: true},
     discogsId: {type: Number, required: true},
     artists: [String],
     thumbnail: String,
-    Songs: [{type: mongoose.Schema.Types.ObjectId, ref: 'Song'}],
+    songs: [String],
     releaseDate: String,
-    genre: String
+    genres: [String]
 });
 
 User.plugin(passportLocalMongoose);
 
 mongoose.model('User', User);
-mongoose.model('Song', Song);
 mongoose.model('Album', Album);
 
 /* Ensure index for search functionality*/

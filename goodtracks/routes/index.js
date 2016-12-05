@@ -1,17 +1,89 @@
 var express = require('express');
-var index = express.Router();
+var index = express.Router(),
+    passport = require('passport'),
+    mongoose = require('mongoose');
+
+var User = mongoose.model('User');
+var Album = mongoose.model('Album');
+
+var Discogs = require('disconnect').Client;
+
+// Authenticate by consumer key and secret
+var db = new Discogs({
+    consumerKey: 'oxxFkQqpQDeNLVRHqLEH',
+    consumerSecret: 'YKKKGSCbEiCGlpoyOMIYItzcnCzVLqGT'
+}).database();
+
+
+
 
 /* GET home page. */
 index.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+    if(req.user) {
+        res.render('index', {title: 'Welcome to GoodTracks'});
+    } else {
+        res.redirect('/login');
+    }
 });
 
 index.get('/add', function(req, res) {
-  res.render('add');
+    if(req.user) {
+        res.render('add');
+    } else {
+        res.redirect('/login');
+    }
+
 });
 
 index.post('/add', function(req, res) {
+        db.getRelease(req.body.discogsID, function(err, data) {
+            console.log(data);
+            var title = data.title;
+            var tracks = [];
+            data.tracklist.forEach(function(el){
+               tracks.push(el.title);
+            });
 
+            var discogsID = data.id;
+            var artists = [];
+            data.artists.forEach(function(el) {
+                artists.push(el.name);
+            });
+            var thumbnail = data.thumb;
+            var genres = data.genres;
+            var released = data.released;
+
+            var album = new Album({
+                title: title,
+                discogsId: discogsID,
+                artists: artists,
+                thumbnail: thumbnail,
+                songs: tracks,
+                releaseDate: released,
+                genres: genres
+            });
+
+            album.save(function(err, savedAlbum) {
+                console.log(savedAlbum);
+                if(req.body.playlist) {
+                    req.user.playlist.push(savedAlbum._id);
+
+                }
+                if(req.body.wishlist) {
+                    req.user.wishlist.push(savedAlbum._id);
+                }
+                if(req.body.listeningTo) {
+                    req.user.listeningTo.push(savedAlbum._id);
+                }
+
+                req.user.save(function(err, savedUser, count) {
+                    console.log(savedUser);
+                    res.redirect('/');
+                });
+            });
+
+
+        });
 });
 
 /* Login Logic */
@@ -29,7 +101,7 @@ index.post('/login', function(req,res,next) {
             // NOTE: using this version of authenticate requires us to
             // call login manually
             req.logIn(user, function(err) {
-                res.redirect('/list');
+                res.redirect('/');
             });
         } else {
             res.render('login', {message:'Your login or password is incorrect.'});
@@ -60,6 +132,29 @@ index.post('/register', function(req, res) {
                 });
             }
         });
+});
+
+var sanitize = require('mongo-sanitize')
+index.get("/search", function(req, res){
+
+});
+
+index.post("/search", function(req, res) {
+    var query = req.body.searchQuery;
+    query = sanitize(query.trim());
+
+    Album.find({ $text : { $search : query } },
+        { score : { $meta: "textScore" } }
+    )
+        .sort({ score : { $meta : 'textScore' } })
+        .exec(function(err, albums) {
+            if(!err) {
+                res.render('search', {albums: albums});
+            } else {
+                res.render('error', {message: "There was a problem searching for that album.", error: err});
+            }
+        });
+
 });
 
 module.exports = index;
