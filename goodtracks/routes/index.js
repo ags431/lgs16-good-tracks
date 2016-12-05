@@ -20,12 +20,37 @@ var db = new Discogs({
 /* GET home page. */
 index.get('/', function(req, res, next) {
     if(req.user) {
+        albums = {};
+        albums.playlistAlbums = [];
+        albums.playlistAlbumsLength = (req.user.playlist.length>3) ? req.user.playlist.length : 3 ;
+        albums.wishlistAlbums = [];
+        albums.wishlistAlbumsLength = (req.user.wishlist.length>3) ? req.user.wishlist.length : 3 ;
+        albums.listeningToAlbums = [];
+        albums.listeningToAlbumsLength = (req.user.listeningTo.length>3) ? req.user.listeningTo.length : 3 ;
+        for(i = 0; i < 3; i++) {
+          Album.findById(req.user.playlist(i), function(err, album) {
+            albums.playlistAlbums.push(album);
+            homeQueryDone(albums, req, res);
+          }
+          Album.findById(req.user.wishlist(i), function(err, album) {
+            albums.wishlistAlbums.push(album);
+            homeQueryDone(albums, req, res);
+          }
+          Album.findById(req.user.listeningTo(i), function(err, album) {
+            albums.listeningToAlbums.push(album)
+            homeQueryDone(albums, req, res);
+          }
+        }
         res.render('index', {title: 'Welcome to GoodTracks'});
     } else {
         res.redirect('/login');
     }
 });
-
+homeQueryDone(albums, req, res) {
+  if(albums.playlistAlbums.length == albums.playlistAlbumsLength && albums.wishlistAlbums.length == albums.wishlistAlbumsLength && albums.listeningToAlbums.length == albums.listeningToAlbumsLength) {
+    res.render('/', {albums: albums});
+  }
+}
 index.get('/add', function(req, res) {
     if(req.user) {
         res.render('add');
@@ -158,7 +183,21 @@ index.post("/search", function(req, res) {
 });
 
 index.get('/playlist', function(req, res, next) {
-  // TODO: Logic to construct and render playlist page
+
+  if(!req.user) {
+    res.redirect('/login');
+  } else {
+    albums = [];
+    albumsTargetLength = req.user.playlist.length;
+    for(id in req.user.playlist) {
+      Album.findById(id, function(err, album) {
+        albums.push(album);
+        if(albums.length == albumsTargetLength) {
+          res.render('playlist', {albums: albums});
+        }
+      });
+    }
+  }
 }
 
 index.get('/wishlist', function(req, res, next) {
