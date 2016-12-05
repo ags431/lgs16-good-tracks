@@ -111,6 +111,24 @@ index.post('/add', function(req, res) {
         });
 });
 
+index.get('/wishlist', function(req, res) {
+    if(req.user){
+        var albums = [];
+        req.user.wishlist.forEach(function(el){
+            Album.findById(el, function(err, found) {
+                albums.push(found);
+
+                if(albums.length === req.user.wishlist.length){
+                    res.render('wishlist', {albums: albums});
+                }
+            });
+        });
+
+    } else {
+        res.redirect('/login');
+    }
+});
+
 /* Login Logic */
 index.get('/login', function(req, res) {
     res.render('login');
