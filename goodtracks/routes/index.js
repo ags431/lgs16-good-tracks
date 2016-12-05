@@ -31,22 +31,22 @@ index.get('/', function(req, res, next) {
           Album.findById(req.user.playlist(i), function(err, album) {
             albums.playlistAlbums.push(album);
             homeQueryDone(albums, req, res);
-          }
+          });
           Album.findById(req.user.wishlist(i), function(err, album) {
             albums.wishlistAlbums.push(album);
             homeQueryDone(albums, req, res);
-          }
+          });
           Album.findById(req.user.listeningTo(i), function(err, album) {
             albums.listeningToAlbums.push(album)
             homeQueryDone(albums, req, res);
-          }
+          });
         }
         res.render('index', {title: 'Welcome to GoodTracks'});
     } else {
         res.redirect('/login');
     }
 });
-homeQueryDone(albums, req, res) {
+function homeQueryDone(albums, req, res) {
   if(albums.playlistAlbums.length == albums.playlistAlbumsLength && albums.wishlistAlbums.length == albums.wishlistAlbumsLength && albums.listeningToAlbums.length == albums.listeningToAlbumsLength) {
     res.render('/', {albums: albums});
   }
@@ -243,10 +243,10 @@ index.get('/playlist', function(req, res, next) {
       });
     }
   }
-}
+});
 
 index.get('/listento', function(req, res, next) {
   // TODO: Logic to construct and render listento page
-}
+});
 
 module.exports = index;
