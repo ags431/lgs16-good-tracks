@@ -245,10 +245,6 @@ index.get('/playlist', function(req, res, next) {
   }
 }
 
-index.get('/wishlist', function(req, res, next) {
-  // TODO: Logic to construct and render wishlist page
-}
-
 index.get('/listento', function(req, res, next) {
   // TODO: Logic to construct and render listento page
 }
