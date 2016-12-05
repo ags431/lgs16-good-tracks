@@ -1,3 +1,8 @@
+require('./db');
+require('./auth');
+
+var passport = require('passport');
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,19 +10,25 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-// Non-default requires
-var http = require('http');
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
-var session = require('express-session');
-var crypto = require('crypto');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
-var search = require('./routes/search');
-var music = require('./routes/music');
+
+
+
+var LocalStrategy = require('passport-local').Strategy;
+
+
+
+var index = require('./routes/index');
 
 var app = express();
+
+var session = require('express-session');
+
+var sessionOptions = {
+    secret: "lifeishard1289",
+    resave: true,
+    saveUninitialized: true
+};
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,41 +43,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Non-default middleware
-var sessionOptions = {
-  secret: "lifeishard1289",
-  resave: true,
-  saveUninitialized: true
-};
+
 app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// TODO: MongoDB initilization & config details
 
-// Passport initialization and config details
-passport.use(new LocalStrategy(
-  function(usernamein, password, done){
-    // TODO: Database query goes here
-    // TODO: and callback
-  }
-)};
-passport.serializeUser(function(user, done) {
-  console.log("serializing user");
-  done(null, user.id); // TODO: This line will change according to the implementation details of the database
-});
-passport.deserializeUser(function(id, done) {
-  console.log("deserializing user');
-  console.log("ID IS " + id);
-  // TODO: Database query to find user using username [id]
+// NOTE: add some middleware that drops req.user into the context of
+// every template
+app.use(function(req, res, next){
+    res.locals.user = req.user;
+    next();
 });
 
-// Debug middleware goes here
 
-// ===================================================
-
-app.use('/users', users);
-app.use('/search', search);
-app.use('/', routes);
+app.use('/', index);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

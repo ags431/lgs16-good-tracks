@@ -10,7 +10,7 @@
         </div>
         <div class="navbar-collapse collapse navbar-responsive-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a> </li>
+                <li><a href="/">Home</a> </li>
                 <li><a href="/playlist">Playlist</a></li>
                 <li><a href="/wishlist">Wish List</a></li>
                 <li><a href="/listento">Listen To</a></li>
@@ -26,6 +26,34 @@
     </div>
 </div>
 
+{{#if albums}}
+    {{#each albums}}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{this.title}}</div>
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <img src="{{this.thumbnail}}">
+                </div>
+                <div class="col-md-9">
+                <p>Artist(s):
+                    {{#each this.artists}}
+                        <span>/ {{this}} /</span>
+                    {{/each}}
+                </p>
+                <p>Songs:
+                    {{#each this.songs}}
+                        <span>/ {{this}} /</span>
+                    {{/each}}
+                </p>
+                <p>Release: {{this.releaseDate}}</p>
 
-
-
+                <p>Genres:
+                    {{#each this.genres}}
+                        <span>/ {{this}} /</span>
+                    {{/each}}
+                </p>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{/if}}
