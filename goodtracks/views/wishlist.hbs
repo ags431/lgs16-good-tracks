@@ -25,3 +25,37 @@
         </div>
     </div>
 </div>
+
+{{#if albums}}
+    {{#each albums}}
+        <div class="panel panel-default">
+            <div class="panel-heading">{{this.title}}</div>
+            <div class="panel-body">
+                <div class="col-md-3">
+                    <img src="{{this.thumbnail}}">
+                </div>
+                <div class="col-md-9">
+                    <p>Artist(s):
+                        {{#each this.artists}}
+                            <span>/ {{this}} /</span>
+                        {{/each}}
+                    </p>
+                    <p>Songs:
+                        {{#each this.songs}}
+                            <span>/ {{this}} /</span>
+                        {{/each}}
+                    </p>
+                    <p>Release: {{this.releaseDate}}</p>
+
+                    <p>Genres:
+                        {{#each this.genres}}
+                            <span>/ {{this}} /</span>
+                        {{/each}}
+                    </p>
+                </div>
+            </div>
+        </div>
+    {{/each}}
+{{else}}
+    <h2>You don't have any albums in your Wishlist!</h2>
+{{/if}}

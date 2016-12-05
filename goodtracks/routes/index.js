@@ -51,6 +51,29 @@ homeQueryDone(albums, req, res) {
     res.render('/', {albums: albums});
   }
 }
+
+index.post('/add-album', function(req, res){
+    console.log(req.body.albumID);
+    var albumId = mongoose.Types.ObjectId.createFromHexString(req.body.albumID);
+    Album.findById(albumId, function(err, album) {
+        if(req.body.playlist) {
+            req.user.playlist.push(album._id);
+
+        }
+        if(req.body.wishlist) {
+            req.user.wishlist.push(album._id);
+        }
+        if(req.body.listeningTo) {
+            req.user.listeningTo.push(album._id);
+        }
+
+        req.user.save(function(err, savedUser, count) {
+            console.log(savedUser);
+            res.redirect('/');
+        });
+    });
+});
+
 index.get('/add', function(req, res) {
     if(req.user) {
         res.render('add');
@@ -111,16 +134,31 @@ index.post('/add', function(req, res) {
         });
 });
 
+index.get('/wishlist', function(req, res) {
+    if(req.user){
+        var albums = [];
+        req.user.wishlist.forEach(function(el){
+            Album.findById(el, function(err, found) {
+                albums.push(found);
+
+                if(albums.length === req.user.wishlist.length){
+                    res.render('wishlist', {albums: albums});
+                }
+            });
+        });
+
+    } else {
+        res.redirect('/login');
+    }
+});
+
 /* Login Logic */
 index.get('/login', function(req, res) {
     res.render('login');
 });
 
 index.post('/login', function(req,res,next) {
-    // NOTE: use the custom version of authenticate so that we can
-    // react to the authentication result... and so that we can
-    // propagate an error back to the frontend without using flash
-    // messages
+
     passport.authenticate('local', function(err,user) {
         if(user) {
             // NOTE: using this version of authenticate requires us to
@@ -132,9 +170,7 @@ index.post('/login', function(req,res,next) {
             res.render('login', {message:'Your login or password is incorrect.'});
         }
     })(req, res, next);
-    // NOTE: notice that this form of authenticate returns a function that
-    // we call immediately! See custom callback section of docs:
-    // http://passportjs.org/guide/authenticate/
+
 });
 
 /*REGISTRATION LOGIC*/
@@ -159,22 +195,31 @@ index.post('/register', function(req, res) {
         });
 });
 
-var sanitize = require('mongo-sanitize')
-index.get("/search", function(req, res){
+var sanitize = require('mongo-sanitize');
 
-});
 
 index.post("/search", function(req, res) {
     var query = req.body.searchQuery;
     query = sanitize(query.trim());
+
+    var discogsLink='https://www.discogs.com/search/?q=';
+    var queryArray = query.split(" ");
+    queryArray.forEach(function(el) {
+        discogsLink += el + "+"
+    });
+
+    discogsLink = discogsLink.slice(0,-1) + "&type=release";
 
     Album.find({ $text : { $search : query } },
         { score : { $meta: "textScore" } }
     )
         .sort({ score : { $meta : 'textScore' } })
         .exec(function(err, albums) {
+            albums.forEach(function(el){
+                el.uniqueID = el.id;
+            });
             if(!err) {
-                res.render('search', {albums: albums});
+                res.render('search', {albums: albums, discogsSearch: discogsLink});
             } else {
                 res.render('error', {message: "There was a problem searching for that album.", error: err});
             }
