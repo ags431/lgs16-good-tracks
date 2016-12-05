@@ -1,6 +1,6 @@
 //express
 var express = require('express');
-var router = express.Router();
+var search = express.Router();
 
 //database
 var mongoose = require('mongoose');
@@ -11,7 +11,7 @@ Song = mongoose.model('Song');
 Album = mongoose.model('Album');
 
 //TODO: doing search of albums and songs separately because searching two collections is very inefficient, can easily change later
-router.post("/search-songs", function(req, res) {
+search.post("/search-songs", function(req, res) {
    var query = req.body.searchQuery;
    query = sanitize(query.trim());
 
@@ -31,7 +31,7 @@ router.post("/search-songs", function(req, res) {
 
 });
 
-router.post("/search-albums", function(req, res) {
+search.post("/search-albums", function(req, res) {
    var query = req.body.searchQuery;
    query = sanitize(query.trim());
 
@@ -48,3 +48,5 @@ router.post("/search-albums", function(req, res) {
        });
 
 });
+
+module.exports = search;
