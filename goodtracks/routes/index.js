@@ -130,6 +130,44 @@ index.get('/wishlist', function(req, res) {
     }
 });
 
+index.get('/playlist', function(req, res) {
+    if(req.user){
+        var albums = [];
+        req.user.playlist.forEach(function(el){
+            Album.findById(el, function(err, found) {
+                albums.push(found);
+
+                if(albums.length === req.user.playlist.length){
+                    res.render('playlist', {albums: albums});
+                }
+            });
+        });
+
+    } else {
+        res.redirect('/login');
+    }
+});
+
+index.get('/listento', function(req, res) {
+    if(req.user){
+        var albums = [];
+        req.user.listeningTo.forEach(function(el){
+            Album.findById(el, function(err, found) {
+                albums.push(found);
+
+                if(albums.length === req.user.listeningTo.length){
+                    res.render('listeningto', {albums: albums});
+                }
+            });
+        });
+
+    } else {
+        res.redirect('/login');
+    }
+});
+
+
+
 /* Login Logic */
 index.get('/login', function(req, res) {
     res.render('login');
