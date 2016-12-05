@@ -26,6 +26,8 @@
     </div>
 </div>
 
+
+<a href="{{discogsSearch}}" target="_blank">Not finding anything? Click here to search Discogs</a>
 {{#if albums}}
     {{#each albums}}
         <div class="panel panel-default">
@@ -52,6 +54,26 @@
                         <span>/ {{this}} /</span>
                     {{/each}}
                 </p>
+                    <form method="post" action="/add-album" class="form-horizontal">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="playlist" value="true"> Add to Playlist
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="wishlist" value="true"> Add to Wishlist
+                                    </label>
+                                    <label>
+                                        <input type="checkbox" name="listeningTo" value="true"> Add to Listening To List
+                                    </label>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                                <input type="hidden" name="albumID" value="{{this.uniqueID}}">
+                            </div>
+                        </fieldset>
+                        </form>
+
                 </div>
             </div>
         </div>

@@ -14,21 +14,6 @@ var User = new mongoose.Schema({
 });
 
 
-/*
-* Schema for Song, Album required as well
- */
-
-/*
-var Song = new mongoose.Schema({
-    title: {type: String, required: true},
-    discogsId: {type: Number, required: true},
-    artists: [String],
-    thumbnail: String,
-    Album: {type: mongoose.Schema.Types.ObjectId, ref: 'Album'},
-    releaseDate: String,
-    genre: String
-}); */
-
 var Album = new mongoose.Schema({
     title: {type: String, required: true},
     discogsId: {type: Number, required: true},
@@ -37,6 +22,8 @@ var Album = new mongoose.Schema({
     songs: [String],
     releaseDate: String,
     genres: [String]
+}, {
+    _id: true
 });
 
 User.plugin(passportLocalMongoose);
