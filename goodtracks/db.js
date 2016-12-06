@@ -34,4 +34,4 @@ mongoose.model('Album', Album);
 /* Ensure index for search functionality*/
 
 /*Change to correct db config*/
-mongoose.connect("mongodb://localhost/jrg467");
+mongoose.connect("mongodb://localhost:27017/largescale", {mongos: true});
