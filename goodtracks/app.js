@@ -34,7 +34,7 @@ MemcachedStore = require('connect-memcached')(session);
 
 var sessionOptions = {
      proxy   : 'true', store   : new MemcachedStore({
-    hosts: ['memcached-13214.c10.us-east-1-3.ec2.cloud.redislabs.com:13214'],
+    hosts: ['memcached-12845.c10.us-east-1-3.ec2.cloud.redislabs.com:12845'],
     secret: '123, easy as ABC. ABC, easy as 123' // Optionally use transparent encryption for memcache session data
 }),
 

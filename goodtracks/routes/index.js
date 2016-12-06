@@ -52,7 +52,7 @@ index.post('/add-album', function(req, res){
     var albumId = mongoose.Types.ObjectId.createFromHexString(req.body.albumID);
     Album.findById(albumId, function(err, album) {
         if(req.body.playlist) {
-            req.user.playlist.push(album._id);
+            req.user.playlist.push({rating: 5, album: album._id});
 
         }
         if(req.body.wishlist) {
@@ -96,6 +96,8 @@ index.post('/add', function(req, res) {
             var genres = data.genres;
             var released = data.released;
 
+            var rating = +req.body.rating;
+
             var album = new Album({
                 title: title,
                 discogsId: discogsID,
@@ -109,7 +111,7 @@ index.post('/add', function(req, res) {
             album.save(function(err, savedAlbum) {
                 console.log(savedAlbum);
                 if(req.body.playlist) {
-                    req.user.playlist.push(savedAlbum._id);
+                    req.user.playlist.push({rating: rating, album:savedAlbum._id});
 
                 }
                 if(req.body.wishlist) {
@@ -156,8 +158,8 @@ index.get('/playlist', function(req, res) {
         var albums = [];
         if(req.user.playlist.length > 0) {
             req.user.playlist.forEach(function (el) {
-                Album.findById(el, function (err, found) {
-                    albums.push(found);
+                Album.findById(el.album, function (err, found) {
+                    albums.push({rating: el.rating, album: found});
 
                     if (albums.length === req.user.playlist.length) {
                         res.render('playlist', {albums: albums});

@@ -5,7 +5,10 @@ var passportLocalMongoose = require('passport-local-mongoose');
 var User = new mongoose.Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
-    playlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
+    playlist: [{
+                rating: Number,
+                album:{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}
+    }],
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
     listeningTo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Album'}]
     /*
@@ -34,4 +37,4 @@ mongoose.model('Album', Album);
 /* Ensure index for search functionality*/
 
 /*Change to correct db config*/
-mongoose.connect("mongodb://localhost:27017/largescale", {mongos: true});
+mongoose.connect("mongodb://localhost:27017/largescalez", {mongos: true});

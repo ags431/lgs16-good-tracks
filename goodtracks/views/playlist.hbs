@@ -29,26 +29,26 @@
 {{#if albums}}
     {{#each albums}}
         <div class="panel panel-default">
-            <div class="panel-heading">{{this.title}}</div>
+            <div class="panel-heading"><b>Album:</b> {{this.album.title}}<br><b>Rating:</b> {{this.rating}}</div>
             <div class="panel-body">
                 <div class="col-md-3">
-                    <img src="{{this.thumbnail}}">
+                    <img src="{{this.album.thumbnail}}">
                 </div>
                 <div class="col-md-9">
                     <p>Artist(s):
-                        {{#each this.artists}}
+                        {{#each this.album.artists}}
                             <span>/ {{this}} /</span>
                         {{/each}}
                     </p>
                     <p>Songs:
-                        {{#each this.songs}}
+                        {{#each this.album.songs}}
                             <span>/ {{this}} /</span>
                         {{/each}}
                     </p>
-                    <p>Release: {{this.releaseDate}}</p>
+                    <p>Release: {{this.album.releaseDate}}</p>
 
                     <p>Genres:
-                        {{#each this.genres}}
+                        {{#each this.album.genres}}
                             <span>/ {{this}} /</span>
                         {{/each}}
                     </p>

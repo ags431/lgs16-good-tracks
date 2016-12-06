@@ -3,14 +3,14 @@
     <form method="post" action="/add" class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label for="discogsID" class="col-md-2 control-label">Discogs ID</label>
+                <label for="discogsID" class="col-md-3 control-label">Discogs ID</label>
 
-                <div class="col-md-10">
+                <div class="col-md-9">
                     <input type="text" name="discogsID" class="form-control" id="discogsID" placeholder="Discogs ID">
                 </div>
-
             </div>
-            <div class="form-group col-md-10 col-md-offset-1">
+
+            <div class="form-group col-md-11 col-md-offset-1">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="playlist" value="true"> Add to Playlist
@@ -25,10 +25,18 @@
                     </label>
                 </div>
                 <br>
+
+            </div>
+            <br>
+            <div class="form-group">
+                <label for="rating" class="col-md-3 control-label">Rating (1 - 5)</label>
+            <div class="col-md-9">
+                <input type="number" name="rating" class="form-control" id="rating" min="1" max="5">
+            </div>
             </div>
 
-                <div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="col-md-10 col-md-offset-1 text-center">
+                    <button type="submit" class="btn btn-raised btn-default">Submit</button>
 
 
             </div>
