@@ -230,9 +230,11 @@ index.post("/search", function(req, res) {
     )
         .sort({ score : { $meta : 'textScore' } })
         .exec(function(err, albums) {
-            albums.forEach(function(el){
-                el.uniqueID = el.id;
-            });
+            if(albums) {
+                albums.forEach(function (el) {
+                    el.uniqueID = el.id;
+                });
+            }
             if(!err) {
                 res.render('search', {albums: albums, discogsSearch: discogsLink});
             } else {
