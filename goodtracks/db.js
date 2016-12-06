@@ -6,7 +6,7 @@ var User = new mongoose.Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
     playlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
-    wishlist: [{rating: Number, album: { type: mongoose.Schema.Types.ObjectId, ref: 'Album'}}],
+    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
     listeningTo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Album'}]
     /*
        Playlist, wishlist, listening to

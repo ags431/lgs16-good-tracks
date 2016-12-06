@@ -98,8 +98,7 @@ index.post('/add', function(req, res) {
                     req.user.wishlist.push(savedAlbum._id);
                 }
                 if(req.body.listeningTo) {
-                    console.log(req.body.rating);
-                    req.user.listeningTo.push({"rating": +req.body.rating.value, "album": savedAlbum._id});
+                    req.user.listeningTo.push(savedAlbum._id);
                 }
 
                 req.user.save(function(err, savedUser, count) {
