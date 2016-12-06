@@ -12,6 +12,7 @@ var User = new mongoose.Schema({
     wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album'}],
     listeningTo: [{type: mongoose.Schema.Types.ObjectId, ref: 'Album'}]
     /*
+    
        Playlist, wishlist, listening to
      */
 });
