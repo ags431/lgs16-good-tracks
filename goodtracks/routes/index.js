@@ -20,7 +20,25 @@ var db = new Discogs({
 /* GET home page. */
 index.get('/', function(req, res, next) {
     if(req.user) {
-        res.render('index', {title: 'Welcome to GoodTracks'});
+
+        Album.count({}, function(err, count){
+            var rand = Math.floor(Math.random() * count);
+            var query = Album.find().skip(rand).limit(1);
+            query.exec(function(err, albums){
+                if(albums) {
+                    albums.forEach(function (el) {
+                        el.uniqueID = el.id;
+                    });
+                }
+                if(!err){
+                    res.render('index', {title: 'Welcome to GoodTracks', albums: albums});
+                } else {
+                    res.render('error', {message: "There was a problem retrieving random albums.", error: err});
+                }
+            });
+        });
+
+
     } else {
         res.redirect('/login');
     }
@@ -114,15 +132,19 @@ index.post('/add', function(req, res) {
 index.get('/wishlist', function(req, res) {
     if(req.user){
         var albums = [];
-        req.user.wishlist.forEach(function(el){
-            Album.findById(el, function(err, found) {
-                albums.push(found);
+        if(req.user.wishlist.length > 0) {
+            req.user.wishlist.forEach(function (el) {
+                Album.findById(el, function (err, found) {
+                    albums.push(found);
 
-                if(albums.length === req.user.wishlist.length){
-                    res.render('wishlist', {albums: albums});
-                }
+                    if (albums.length === req.user.wishlist.length) {
+                        res.render('wishlist', {albums: albums});
+                    }
+                });
             });
-        });
+        } else {
+            res.render('wishlist');
+        }
 
     } else {
         res.redirect('/login');
@@ -132,15 +154,19 @@ index.get('/wishlist', function(req, res) {
 index.get('/playlist', function(req, res) {
     if(req.user){
         var albums = [];
-        req.user.playlist.forEach(function(el){
-            Album.findById(el, function(err, found) {
-                albums.push(found);
+        if(req.user.playlist.length > 0) {
+            req.user.playlist.forEach(function (el) {
+                Album.findById(el, function (err, found) {
+                    albums.push(found);
 
-                if(albums.length === req.user.playlist.length){
-                    res.render('playlist', {albums: albums});
-                }
+                    if (albums.length === req.user.playlist.length) {
+                        res.render('playlist', {albums: albums});
+                    }
+                });
             });
-        });
+        } else {
+            res.render('playlist');
+        }
 
     } else {
         res.redirect('/login');
@@ -150,15 +176,20 @@ index.get('/playlist', function(req, res) {
 index.get('/listento', function(req, res) {
     if(req.user){
         var albums = [];
-        req.user.listeningTo.forEach(function(el){
-            Album.findById(el, function(err, found) {
-                albums.push(found);
+        if(req.user.listeningTo.length > 0) {
+            req.user.listeningTo.forEach(function (el) {
+                Album.findById(el, function (err, found) {
+                    albums.push(found);
 
-                if(albums.length === req.user.listeningTo.length){
-                    res.render('listeningto', {albums: albums});
-                }
+                    if (albums.length === req.user.listeningTo.length) {
+                        res.render('listeningto', {albums: albums});
+                    }
+                });
             });
-        });
+        }
+        else {
+            res.render('listeningto');
+        }
 
     } else {
         res.redirect('/login');

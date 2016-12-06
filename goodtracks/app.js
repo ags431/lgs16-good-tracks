@@ -14,6 +14,7 @@ var bodyParser = require('body-parser');
 
 
 
+
 var LocalStrategy = require('passport-local').Strategy;
 
 
@@ -24,12 +25,34 @@ var app = express();
 
 var session = require('express-session');
 
+var RedisStore = require('connect-memcached')(session);
+var redisUrl = require('redis-url');
+
+
+MemcachedStore = require('connect-memcached')(session);
+
+
 var sessionOptions = {
+     proxy   : 'true', store   : new MemcachedStore({
+    hosts: ['memcached-13214.c10.us-east-1-3.ec2.cloud.redislabs.com:13214'],
+    secret: '123, easy as ABC. ABC, easy as 123' // Optionally use transparent encryption for memcache session data
+}),
+
+    secret: "lifeishard1289",
+    resave: false,
+    saveUninitialized: true
+};
+
+/*
+var sessionStore = new RedisStore({client: redisUrl.connect('redis-10987.c10.us-east-1-3.ec2.cloud.redislabs.com:10987')});
+
+var sessionOptions = {
+    store: sessionStore,
     secret: "lifeishard1289",
     resave: true,
     saveUninitialized: true
 };
-
+*/
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
